@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>تواصلي معنا | مَرْوَة</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .contact-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-lg); }
+    @media (min-width: 1024px) { .contact-grid { grid-template-columns: 5fr 7fr; } }
+    .contact-info-card {
+      padding: var(--space-lg); border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-tertiary) 100%);
+      color: var(--color-on-primary); display: flex; flex-direction: column;
+      gap: var(--space-md); box-shadow: var(--shadow-xl);
+      position: relative; overflow: hidden;
+    }
+    .contact-info-card::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px; border-radius: 50%;
+      background: rgba(255, 219, 151, 0.15); filter: blur(40px);
+    }
+    .contact-info-item { display: flex; align-items: flex-start; gap: 0.75rem; position: relative; z-index: 1; }
+    .contact-info-item .material-symbols-outlined { color: var(--color-secondary-fixed); font-size: 1.25rem; margin-top: 2px; }
+    .contact-info-item .label { font-size: 0.625rem; color: var(--color-secondary-fixed); font-weight: 600; letter-spacing: 0.1em; display: block; margin-bottom: 0.125rem; }
+    .contact-info-item .value { font-size: 0.9375rem; color: var(--color-on-primary); }
+    .contact-social { display: flex; gap: 0.75rem; margin-top: var(--space-sm); position: relative; z-index: 1; }
+    .contact-social a {
+      width: 2.75rem; height: 2.75rem; border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-on-primary); text-decoration: none; transition: all 0.2s;
+    }
+    .contact-social a:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+    .contact-form-card { padding: var(--space-lg); border-radius: var(--radius-xl); background: var(--color-surface-container-lowest); box-shadow: var(--shadow-md); }
+    .form-row { display: grid; grid-template-columns: 1fr; gap: var(--space-md); margin-bottom: var(--space-md); }
+    @media (min-width: 640px) { .form-row.two-cols { grid-template-columns: 1fr 1fr; } }
+    .form-field { display: flex; flex-direction: column; gap: 0.375rem; }
+    .form-field label { font-size: 0.75rem; font-weight: 600; color: var(--color-on-surface-variant); letter-spacing: 0.06em; }
+    .form-field label .required { color: var(--color-error); }
+    .form-field input, .form-field select, .form-field textarea {
+      padding: 0.75rem 1rem; border-radius: var(--radius-default);
+      background: var(--color-surface-container-low);
+      border: 1px solid var(--color-outline-variant);
+      font-family: var(--font-body); font-size: 0.9375rem;
+      color: var(--color-on-surface); outline: none; transition: all 0.2s;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      border-color: var(--color-primary); background: var(--color-surface-container-lowest);
+      box-shadow: 0 0 0 3px rgba(123, 83, 92, 0.1);
+    }
+    .form-field textarea { resize: vertical; min-height: 120px; }
+    .form-submit-btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.875rem 2rem; border-radius: var(--radius-full);
+      background: var(--color-primary); color: var(--color-on-primary);
+      font-size: 1rem; font-weight: 600; letter-spacing: 0.06em;
+      border: none; cursor: pointer; font-family: var(--font-body);
+      box-shadow: var(--shadow-md); transition: all 0.3s; width: 100%;
+    }
+    .form-submit-btn:hover { background: var(--color-on-primary-container); box-shadow: var(--shadow-lg); }
+    .map-wrapper {
+      border-radius: var(--radius-xl); overflow: hidden;
+      box-shadow: var(--shadow-md); margin-top: var(--space-lg);
+      height: 320px; background: var(--color-surface-container-high); position: relative;
+    }
+    .map-placeholder {
+      width: 100%; height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.5rem;
+      background: linear-gradient(135deg, var(--color-primary-fixed) 0%, var(--color-secondary-fixed) 100%);
+      color: var(--color-primary); text-align: center; padding: 2rem;
+    }
+    .map-placeholder .material-symbols-outlined { font-size: 3rem; }
+    .map-placeholder h3 { font-family: var(--font-headline); font-size: 1.25rem; }
+    .map-placeholder p { font-size: 0.875rem; color: var(--color-on-surface-variant); }
+    .faq-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .faq-item { border-radius: var(--radius-default); background: var(--color-surface-container-low); overflow: hidden; transition: all 0.2s; }
+    .faq-item.open { background: var(--color-surface-container-lowest); box-shadow: var(--shadow-sm); }
+    .faq-question {
+      width: 100%; padding: 1rem 1.25rem; background: none; border: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; font-family: var(--font-body); font-size: 0.9375rem;
+      font-weight: 600; color: var(--color-on-surface); text-align: right;
+    }
+    .faq-question .material-symbols-outlined { color: var(--color-secondary); font-size: 1.25rem; transition: transform 0.3s; }
+    .faq-item.open .faq-question .material-symbols-outlined { transform: rotate(180deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 1.25rem; color: var(--color-on-surface-variant); font-size: 0.875rem; line-height: 1.7; }
+    .faq-item.open .faq-answer { max-height: 300px; padding-bottom: 1.25rem; }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar" id="sidebar">
+    <div>
+      <div class="sidebar-profile">
+        <img alt="Profile" src="https://lh3.googleusercontent.com/aida/AEtjO1UJZifLAqDHm10WB-kcewgfP4ZGr7kWMOXsFHXYEC1tXdNYg4PdQaI-BBWhsc1yfYFUbUSwt50BrEDQQiBVBgorzx19WFUA1EjZhx5FKiR0iOfivB9o9gLHat5w7x6HBpiPRdK_X85IMJ4-v7YQD0CIYTGpa3_vTDNZvU7X6B0UHHYRlhUSXUPLcQRpnrqB54mid0qehrdjNGXFmBYcAWb4EKV4jTrztIICRV41vPzd91LwkqcbTMrGo3na" />
+        <div>
+          <span class="sidebar-brand-name">مَرْوَة</span>
+          <span class="sidebar-brand-sub">PARFUMS &amp; BOTANIQUE</span>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <nav class="sidebar-nav">
+        <a href="index.html"><span class="material-symbols-outlined">spa</span><span>الرئيسية</span></a>
+        <a href="womens-perfumes.html"><span class="material-symbols-outlined">local_florist</span><span>العطور النسائية</span></a>
+        <a href="mens-perfumes.html"><span class="material-symbols-outlined">dark_mode</span><span>العطور الرجالية</span></a>
+        <a href="hair-oils.html"><span class="material-symbols-outlined">water_drop</span><span>زيوت الشعر الطبيعية</span></a>
+        <a href="offers.html"><span class="material-symbols-outlined">featured_seasonal_and_gifts</span><span>العروض والباقات</span></a>
+        <a href="gallery.html"><span class="material-symbols-outlined">photo_camera</span><span>معرض الصور</span></a>
+        <a href="contact.html" class="active"><span class="material-symbols-outlined">perm_phone_msg</span><span>تواصلي معنا</span></a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-cart-info">
+        <span>حقيبة التسوق</span>
+        <span class="sidebar-cart-count" data-cart-count>٠</span>
+      </div>
+      <div class="sidebar-settings">
+        <button type="button"><span class="material-symbols-outlined">language</span><span>العربية (SA)</span></button>
+        <button class="theme-toggle" aria-label="Toggle theme" type="button"><span class="material-symbols-outlined">routine</span></button>
+      </div>
+    </div>
+  </aside>
+
+  <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="القائمة"><span class="material-symbols-outlined">menu</span></button>
+
+  <div class="main-wrapper">
+    <header class="header">
+      <div class="header-announcement">
+        <div class="header-announcement-content">
+          <span class="material-symbols-outlined" style="font-size:1rem;">support_agent</span>
+          <span>خدمة عملاء مروة متاحة على مدار الساعة • ٢٤/٧</span>
+        </div>
+        <div><span>بوتيك مروة الملكي</span></div>
+      </div>
+      <div class="header-main">
+        <div class="header-search">
+          <div class="header-search-wrapper">
+            <input type="text" placeholder="ابحث..." />
+            <span class="material-symbols-outlined">search</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="header-action-btn" type="button">
+            <span class="material-symbols-outlined">favorite</span>
+            <span>المفضلة</span>
+            <span class="header-badge tertiary" data-wishlist-count>٠</span>
+          </button>
+          <button class="header-action-btn" type="button">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            <span>الحقيبة</span>
+            <span class="header-badge secondary" data-cart-count>٠</span>
+          </button>
+          <img alt="Profile" class="header-avatar" src="https://lh3.googleusercontent.com/aida/AEtjO1UJZifLAqDHm10WB-kcewgfP4ZGr7kWMOXsFHXYEC1tXdNYg4PdQaI-BBWhsc1yfYFUbUSwt50BrEDQQiBVBgorzx19WFUA1EjZhx5FKiR0iOfivB9o9gLHat5w7x6HBpiPRdK_X85IMJ4-v7YQD0CIYTGpa3_vTDNZvU7X6B0UHHYRlhUSXUPLcQRpnrqB54mid0qehrdjNGXFmBYcAWb4EKV4jTrztIICRV41vPzd91LwkqcbTMrGo3na" />
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="section" style="text-align:center;padding-bottom:var(--space-md);">
+        <div class="hero-badge" style="margin-bottom:var(--space-sm);">
+          <span class="material-symbols-outlined">perm_phone_msg</span>
+          <span>نحن هنا لخدمتك • CONCIERGE SERVICE</span>
+          <span class="material-symbols-outlined">perm_phone_msg</span>
+        </div>
+        <h1 class="section-title" style="font-size:2.5rem;">تواصلي مع دار مروة</h1>
+        <p class="section-desc" style="max-width:48rem;margin:var(--space-sm) auto 0;">
+          فريقنا من مستشارات العطور النباتية جاهز لمساعدتك، استفسارات الطلبات، وخدمة العملاء على مدار الساعة.
+        </p>
+      </section>
+
+      <section class="section" style="padding-top:0;">
+        <div class="contact-grid">
+          <div class="contact-info-card">
+            <div>
+              <span class="section-label" style="color:var(--color-secondary-fixed);">معلومات التواصل المباشر</span>
+              <h2 style="font-family:var(--font-headline);font-size:1.75rem;margin-top:0.25rem;">تحدثي معنا</h2>
+              <p style="font-size:0.9375rem;color:var(--color-primary-fixed);margin-top:0.5rem;line-height:1.7;">
+                نسعد بخدمتك والإجابة على جميع استفساراتك حول منتجاتنا، الشحن، أو حجز استشارة عطرية مجانية.
+              </p>
+            </div>
+            <div class="contact-info-item">
+              <span class="material-symbols-outlined">call</span>
+              <div>
+                <span class="label">اتصلي بنا</span>
+                <span class="value" dir="ltr">+966 50 000 0000</span>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <span class="material-symbols-outlined">alternate_email</span>
+              <div>
+                <span class="label">البريد الإلكتروني</span>
+                <span class="value" dir="ltr">hello@marwa-parfum.com</span>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <span class="material-symbols-outlined">location_on</span>
+              <div>
+                <span class="label">الفرع الرئيسي</span>
+                <span class="value">الرياض - البوليفارد سيتي<br/>مملكة العربية السعودية</span>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <span class="material-symbols-outlined">schedule</span>
+              <div>
+                <span class="label">أوقات العمل</span>
+                <span class="value">السبت - الخميس: ١٠ ص - ١١ م<br/>الجمعة: ٤ م - ١١ م</span>
+              </div>
+            </div>
+            <div class="contact-social">
+              <a href="https://wa.me/966500000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><span class="material-symbols-outlined">chat</span></a>
+              <a href="#" aria-label="Instagram"><span class="material-symbols-outlined">photo_camera</span></a>
+              <a href="#" aria-label="Twitter"><span class="material-symbols-outlined">flutter_dash</span></a>
+              <a href="#" aria-label="TikTok"><span class="material-symbols-outlined">music_note</span></a>
+            </div>
+          </div>
+
+          <div class="contact-form-card">
+            <span class="section-label">نموذج التواصل</span>
+            <h2 style="font-family:var(--font-headline);font-size:1.75rem;color:var(--color-primary);margin-top:0.25rem;margin-bottom:var(--space-md);">أرسلي رسالتك</h2>
+
+            <form id="contact-form" onsubmit="handleFormSubmit(event)">
+              <div class="form-row two-cols">
+                <div class="form-field">
+                  <label for="contact-name">الاسم الكامل <span class="required">*</span></label>
+                  <input type="text" id="contact-name" name="name" placeholder="اسمك الكريم" required />
+                </div>
+                <div class="form-field">
+                  <label for="contact-email">البريد الإلكتروني <span class="required">*</span></label>
+                  <input type="email" id="contact-email" name="email" placeholder="example@email.com" required dir="ltr" />
+                </div>
+              </div>
+
+              <div class="form-row two-cols">
+                <div class="form-field">
+                  <label for="contact-phone">رقم الجوال</label>
+                  <input type="tel" id="contact-phone" name="phone" placeholder="+966 5X XXX XXXX" dir="ltr" />
+                </div>
+                <div class="form-field">
+                  <label for="contact-subject">الموضوع <span class="required">*</span></label>
+                  <select id="contact-subject" name="subject" required>
+                    <option value="">اختاري الموضوع...</option>
+                    <option value="order">استفسار عن طلب</option>
+                    <option value="product">استفسار عن منتج</option>
+                    <option value="consultation">طلب استشارة عطرية</option>
+                    <option value="bridal">استفسار عن باقات العروس</option>
+                    <option value="wholesale">طلبات الجملة</option>
+                    <option value="feedback">اقتراح أو شكوى</option>
+                    <option value="other">أخرى</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="contact-message">رسالتك <span class="required">*</span></label>
+                  <textarea id="contact-message" name="message" placeholder="اكتبي رسالتك هنا..." required></textarea>
+                </div>
+              </div>
+
+              <button type="submit" class="form-submit-btn">
+                <span class="material-symbols-outlined">send</span>
+                <span>إرسال الرسالة</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="map-wrapper">
+          <div class="map-placeholder">
+            <span class="material-symbols-outlined">location_on</span>
+            <h3>بوتيك مروة الملكي</h3>
+            <p>الرياض - البوليفارد سيتي، المملكة العربية السعودية</p>
+            <a href="https://maps.google.com/?q=Riyadh+Boulevard+City" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="margin-top:1rem;">
+              <span class="material-symbols-outlined">map</span>
+              <span>افتحي في خرائط جوجل</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header" style="text-align:center;flex-direction:column;align-items:center;">
+          <span class="section-label">الأسئلة الشائعة</span>
+          <h2 class="section-title">إجابات على استفساراتك</h2>
+        </div>
+
+        <div class="faq-list" id="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" type="button" onclick="toggleFaq(this)">
+              <span>ما هي مدة التوصيل المتوقعة داخل السعودية؟</span>
+              <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+              التوصيل داخل الرياض يستغرق ٢٤-٤٨ ساعة، بينما باقي مدن المملكة من ٢-٤ أيام عمل. الطلبات فوق ٣٠٠ ر.س تحصل على شحن مجاني بالكامل.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" onclick="toggleFaq(this)">
+              <span>هل العطور والزيوت طبيعية ١٠٠٪؟</span>
+              <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+              نعم، جميع زيوت الشعر معصورة على البارد من مصادر عضوية معتمدة، والعطور تعتمد على الدهون النباتية النقية بدون كحول صناعي أو مواد حافظة ضارة.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" onclick="toggleFaq(this)">
+              <span>هل يمكنني إرجاع أو استبدال المنتج؟</span>
+              <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+              نعم، يمكنك الإرجاع خلال ١٤ يوماً من الاستلام بشرط أن يكون المنتج في حالته الأصلية وغير مستخدم. الطلبات المخصصة (المزج الخاص والنقش) غير قابلة للإرجاع.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" onclick="toggleFaq(this)">
+              <span>هل تقدمون خدمة الاستشارة العطرية المجانية؟</span>
+              <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+              بكل تأكيد! نقدم استشارة عطرية مجانية عبر الواتساب أو الاتصال المرئي مع مستشاراتنا المتخصصات في علم الشم والعناية النباتية، مع إرسال عينات مجانية للعنوان.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" type="button" onclick="toggleFaq(this)">
+              <span>هل يمكن تخصيص عطر خاص بي؟</span>
+              <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+              نعم، خدمة المزج الخاص متاحة بحجز مسبق. نعمل معك على اختيار النوتات العطرية المفضلة وتركيبها حسب ذوقك الخاص، مع إمكانية نقش اسمك بالذهب على الزجاجة.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="modal-overlay" id="quick-view-modal">
+        <div class="modal-content">
+          <button class="modal-close" onclick="closeQuickView()" type="button"><span class="material-symbols-outlined">close</span></button>
+          <div class="modal-image"><img alt="Product" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEvYXF_ad0lJ13RKrUo9D3m-NDQxbX__t8Pz_TH0QwX2egvEjDoKO_jIhUKRPvy6PdEK4-AlhAULLscOVAqVCGfMuCstonOuxjs-4Rw_Z6Cq2hLA1Nm0r2b4zufx64eUR7xLBj0motemif_E-VwGjiIvA7i3ggdNQCewKj2BOkrC5iNMG1ome72cImkY9MZc2aeCMNaIebmL4BUdIiwfyCOTs7nF9qhT5mJ4QaTdDbaZcSsElvyW86sw" /></div>
+          <div class="modal-body">
+            <div>
+              <span class="modal-label">تفاصيل المزيج الملكي</span>
+              <h3 class="modal-title" id="modal-title">اسم المنتج</h3>
+              <span class="modal-price" id="modal-price">٠ ر.س</span>
+              <p class="modal-desc" id="modal-desc">وصف المنتج...</p>
+            </div>
+            <div class="modal-actions">
+              <button class="modal-add-btn" id="modal-add-btn" type="button">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                <span>إضافة إلى الحقيبة</span>
+              </button>
+              <button class="modal-cancel-btn" onclick="closeQuickView()" type="button">إغلاق</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="cart-toast">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span id="cart-toast-text">تمت الإضافة بنجاح</span>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="footer-brand-header">
+              <span class="footer-brand-name">مَرْوَة</span>
+              <span class="footer-brand-sub">HAUTE PARFUMERIE</span>
+            </div>
+            <p class="footer-text">مستخلصات نباتية نقية ودهون عطرية فاخرة مُصممة بعناية لتعكس الرقي.</p>
+            <div class="footer-hours">
+              <span class="material-symbols-outlined" style="font-size:1rem;">schedule</span>
+              <span>أوقات البوتيك: السبت - الخميس (١٠ ص - ١١ م)</span>
+            </div>
+          </div>
+          <div class="footer-links">
+            <span class="footer-links-title">روابط البوتيك</span>
+            <a href="womens-perfumes.html">عطور الزهور المخملية</a>
+            <a href="hair-oils.html">زيوت إكليل الجبل والخزامى</a>
+            <a href="offers.html">باقات الأعراس الملكية</a>
+            <a href="#">سياسة الاستبدال والضمان الذهبي</a>
+          </div>
+          <div class="footer-contact">
+            <span class="footer-links-title">التواصل والتألق</span>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">alternate_email</span><span>Instagram: @marwa.parfum</span></div>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">location_on</span><span>الرياض - البوليفارد سيتي، السعودية</span></div>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">call</span><span>+966 50 000 0000</span></div>
+          </div>
+          <div class="footer-newsletter">
+            <span class="footer-links-title">نشرة أسرار الطبيعة</span>
+            <p class="footer-text">انضمي إلى نادي مروة الخاص لتصلكِ الإصدارات المحدودة قبل الجميع.</p>
+            <div class="footer-newsletter-form">
+              <input type="email" placeholder="بريدكِ الإلكتروني..." />
+              <button type="button">اشتراك</button>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© ٢٠٢٥ دار مروة للعطور والزيوت النباتية. جميع الحقوق محفوظة.</p>
+          <div class="footer-payment"><span>مدى</span><span>فيزا</span><span>Apple Pay</span><span>تمارا</span><span>تابي</span></div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <a href="https://wa.me/966500000000" target="_blank" rel="noopener noreferrer" class="whatsapp-btn" aria-label="تواصل واتساب"><span class="material-symbols-outlined">chat</span></a>
+  <a href="#top" class="back-to-top" aria-label="العودة للأعلى"><span class="material-symbols-outlined">keyboard_arrow_up</span></a>
+
+  <script src="script.js"></script>
+  <script>
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach((i) => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value;
+      showToast(`شكراً ${name}! تم استلام رسالتك وسنتواصل معك قريباً`);
+      e.target.reset();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>العروض والباقات | مَرْوَة</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .bundle-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius-xl);
+      background: var(--color-surface-container-lowest);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .bundle-card:hover { box-shadow: var(--shadow-xl); transform: translateY(-4px); }
+    .bundle-image { position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; background: var(--color-surface-container-high); }
+    .bundle-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+    .bundle-card:hover .bundle-image img { transform: scale(1.05); }
+    .bundle-discount {
+      position: absolute; top: 1rem; right: 1rem; padding: 0.375rem 0.875rem;
+      border-radius: var(--radius-full); background: var(--color-error); color: var(--color-on-error);
+      font-size: 0.75rem; font-weight: 700; box-shadow: var(--shadow-md);
+    }
+    .bundle-body { padding: var(--space-md); display: flex; flex-direction: column; gap: 0.5rem; }
+    .bundle-title { font-family: var(--font-headline); font-size: 1.25rem; font-weight: 600; color: var(--color-primary); }
+    .bundle-desc { font-size: 0.8125rem; color: var(--color-on-surface-variant); line-height: 1.6; }
+    .bundle-items { display: flex; flex-direction: column; gap: 0.375rem; padding: var(--space-sm); background: var(--color-surface-container-low); border-radius: var(--radius-default); margin: 0.5rem 0; }
+    .bundle-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: var(--color-on-surface); }
+    .bundle-item .material-symbols-outlined { font-size: 1rem; color: var(--color-secondary); }
+    .bundle-price-row { display: flex; align-items: baseline; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    .bundle-old-price { font-size: 0.875rem; color: var(--color-outline); text-decoration: line-through; }
+    .bundle-new-price { font-family: var(--font-headline); font-size: 1.5rem; font-weight: 600; color: var(--color-primary); }
+    .bundle-new-price small { font-size: 0.875rem; font-weight: 400; color: var(--color-on-surface); }
+    .bundle-save { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; border-radius: var(--radius-full); background: rgba(186, 26, 26, 0.1); color: var(--color-error); font-size: 0.625rem; font-weight: 700; }
+    .special-offer-banner {
+      position: relative; overflow: hidden; border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-tertiary) 50%, var(--color-secondary) 100%);
+      padding: var(--space-xl); color: var(--color-on-primary); text-align: center; margin-bottom: var(--space-xl);
+    }
+    .special-offer-banner h2 { font-family: var(--font-headline); font-size: 2rem; margin-bottom: 0.5rem; }
+    .special-offer-banner p { font-size: 1rem; color: var(--color-primary-fixed); margin-bottom: var(--space-md); }
+    .countdown { display: flex; justify-content: center; gap: var(--space-sm); margin-top: var(--space-md); }
+    .countdown-box {
+      display: flex; flex-direction: column; align-items: center; padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px);
+      border-radius: var(--radius-default); min-width: 4rem;
+    }
+    .countdown-box .num { font-family: var(--font-headline); font-size: 1.5rem; font-weight: 600; color: var(--color-secondary-fixed); }
+    .countdown-box .label { font-size: 0.625rem; color: var(--color-primary-fixed); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar" id="sidebar">
+    <div>
+      <div class="sidebar-profile">
+        <img alt="Profile" src="https://lh3.googleusercontent.com/aida/AEtjO1UJZifLAqDHm10WB-kcewgfP4ZGr7kWMOXsFHXYEC1tXdNYg4PdQaI-BBWhsc1yfYFUbUSwt50BrEDQQiBVBgorzx19WFUA1EjZhx5FKiR0iOfivB9o9gLHat5w7x6HBpiPRdK_X85IMJ4-v7YQD0CIYTGpa3_vTDNZvU7X6B0UHHYRlhUSXUPLcQRpnrqB54mid0qehrdjNGXFmBYcAWb4EKV4jTrztIICRV41vPzd91LwkqcbTMrGo3na" />
+        <div>
+          <span class="sidebar-brand-name">مَرْوَة</span>
+          <span class="sidebar-brand-sub">PARFUMS &amp; BOTANIQUE</span>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <nav class="sidebar-nav">
+        <a href="index.html"><span class="material-symbols-outlined">spa</span><span>الرئيسية</span></a>
+        <a href="womens-perfumes.html"><span class="material-symbols-outlined">local_florist</span><span>العطور النسائية</span></a>
+        <a href="mens-perfumes.html"><span class="material-symbols-outlined">dark_mode</span><span>العطور الرجالية</span></a>
+        <a href="hair-oils.html"><span class="material-symbols-outlined">water_drop</span><span>زيوت الشعر الطبيعية</span></a>
+        <a href="offers.html" class="active"><span class="material-symbols-outlined">featured_seasonal_and_gifts</span><span>العروض والباقات</span></a>
+        <a href="gallery.html"><span class="material-symbols-outlined">photo_camera</span><span>معرض الصور</span></a>
+        <a href="contact.html"><span class="material-symbols-outlined">perm_phone_msg</span><span>تواصلي معنا</span></a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-cart-info">
+        <span>حقيبة التسوق</span>
+        <span class="sidebar-cart-count" data-cart-count>٠</span>
+      </div>
+      <div class="sidebar-settings">
+        <button type="button"><span class="material-symbols-outlined">language</span><span>العربية (SA)</span></button>
+        <button class="theme-toggle" aria-label="Toggle theme" type="button"><span class="material-symbols-outlined">routine</span></button>
+      </div>
+    </div>
+  </aside>
+
+  <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="القائمة"><span class="material-symbols-outlined">menu</span></button>
+
+  <div class="main-wrapper">
+    <header class="header">
+      <div class="header-announcement">
+        <div class="header-announcement-content">
+          <span class="material-symbols-outlined" style="font-size:1rem;">auto_awesome</span>
+          <span>توصيل مجاني للطلبات فوق ٣٠٠ ر.س • تغليف ملكي فاخر مجاناً</span>
+        </div>
+        <div><span>بوتيك مروة الملكي</span></div>
+      </div>
+      <div class="header-main">
+        <div class="header-search">
+          <div class="header-search-wrapper">
+            <input type="text" placeholder="ابحث عن الباقات والعروض..." />
+            <span class="material-symbols-outlined">search</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="header-action-btn" type="button">
+            <span class="material-symbols-outlined">favorite</span>
+            <span>المفضلة</span>
+            <span class="header-badge tertiary" data-wishlist-count>٠</span>
+          </button>
+          <button class="header-action-btn" type="button">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            <span>الحقيبة</span>
+            <span class="header-badge secondary" data-cart-count>٠</span>
+          </button>
+          <img alt="Profile" class="header-avatar" src="https://lh3.googleusercontent.com/aida/AEtjO1UJZifLAqDHm10WB-kcewgfP4ZGr7kWMOXsFHXYEC1tXdNYg4PdQaI-BBWhsc1yfYFUbUSwt50BrEDQQiBVBgorzx19WFUA1EjZhx5FKiR0iOfivB9o9gLHat5w7x6HBpiPRdK_X85IMJ4-v7YQD0CIYTGpa3_vTDNZvU7X6B0UHHYRlhUSXUPLcQRpnrqB54mid0qehrdjNGXFmBYcAWb4EKV4jTrztIICRV41vPzd91LwkqcbTMrGo3na" />
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="section" style="text-align:center;padding-bottom:var(--space-md);">
+        <div class="hero-badge" style="margin-bottom:var(--space-sm);">
+          <span class="material-symbols-outlined">local_offer</span>
+          <span>عروض حصرية • EXCLUSIVE OFFERS &amp; BUNDLES</span>
+          <span class="material-symbols-outlined">local_offer</span>
+        </div>
+        <h1 class="section-title" style="font-size:2.5rem;">العروض والباقات الملكية</h1>
+        <p class="section-desc" style="max-width:48rem;margin:var(--space-sm) auto 0;">
+          وفّري أكثر مع باقاتنا الحصرية المصممة بعناية، من مجموعات العروس إلى صناديق الهدايا الملكية.
+        </p>
+      </section>
+
+      <section class="section" style="padding-top:0;">
+        <div class="special-offer-banner">
+          <div class="vip-badge" style="margin:0 auto 0.5rem;">
+            <span class="material-symbols-outlined">bolt</span>
+            <span>عرض محدود لفترة قصيرة</span>
+          </div>
+          <h2>خصم ٢٥٪ على جميع الباقات</h2>
+          <p>استخدمي كود <strong>MARWA25</strong> عند إتمام الطلب</p>
+          <div class="countdown" id="countdown">
+            <div class="countdown-box"><span class="num" id="days">٠٠</span><span class="label">يوم</span></div>
+            <div class="countdown-box"><span class="num" id="hours">٠٠</span><span class="label">ساعة</span></div>
+            <div class="countdown-box"><span class="num" id="minutes">٠٠</span><span class="label">دقيقة</span></div>
+            <div class="countdown-box"><span class="num" id="seconds">٠٠</span><span class="label">ثانية</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" style="padding-top:0;">
+        <div class="products-grid" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr));">
+
+          <!-- Bundle 1 -->
+          <div class="bundle-card">
+            <div class="bundle-image">
+              <img alt="باقة العروس الملكية" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnr_RnRGaBJ63_ismn_oAOF_y_w54IYq7xcphOmYq8BYYI6nDKXpXW1p2eS8UvBtm2h0DzXzgZo0wpdtgh_ympQIKvqTdjKUX2z3CtyZffDFknBK5oZwGZmT46Rj-KdjtDdvdohW5HgBFjpm-CMWjBT-GavEKHYtDoz3GrbL39KnHTbldx_Xm1cJe-3pTdJoy_R7PL0WMOA-AoQnJju-mZLnyqzZ2D0snEoyIe3VEot9lp8IbCM--Gsg" />
+              <div class="bundle-discount">وفّري ٤٠٠ ر.س</div>
+            </div>
+            <div class="bundle-body">
+              <span class="section-label">للعرائس • BRIDAL SUITE</span>
+              <h3 class="bundle-title">باقة العروس الملكية</h3>
+              <p class="bundle-desc">كل ما تحتاجينه ليلة العمر: عطر، دهن عود، زيت شعر، وتغليف مخملي ملكي مع نقش اسمك بالذهب.</p>
+              <div class="bundle-items">
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>سحر الورد الدمشقي ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>دهن عود ملكي ٥٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>إكسير إكليل الجبل الذهبي ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>تغليف مخملي + نقش ذهبي مجاناً</span></div>
+              </div>
+              <div class="bundle-price-row">
+                <span class="bundle-old-price">١٬٨٠٠ ر.س</span>
+                <span class="bundle-new-price">١٬٤٠٠ <small>ر.س</small></span>
+                <span class="bundle-save"><span class="material-symbols-outlined" style="font-size:0.875rem;">savings</span>وفّري ٤٠٠ ر.س</span>
+              </div>
+              <button class="btn-add-cart" style="width:100%;justify-content:center;" onclick="addToCartNotification('باقة العروس الملكية', '1400 ر.س')" type="button">
+                <span class="material-symbols-outlined">local_mall</span>
+                <span>أضيفي الباقة للسلة</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bundle 2 -->
+          <div class="bundle-card">
+            <div class="bundle-image">
+              <img alt="باقة التناغم الثنائي" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMXfq8FrTg77kWcRrus_6Y0Rb6nIKSEO7rnzVYlfWvibZUiUiCGMd6NKYg1BFkYc5krZs9XbSYY0SsZHDcknBpH_fcOIjsI4LfCA4spsCyQm62Gbs7FyPCaE885HnqyxG44KFWQso42naKFbqsK82ySlvDzY6fYoT25aDkePmMncwuvHPBAiwMxd3v7vzJ5_FUw9-N69BXNkEV_ig7jMpJt5wpgtKZe5dxPjGbcyWOzy2VAIvOh26Yyw" />
+              <div class="bundle-discount">وفّري ٢٠٪</div>
+            </div>
+            <div class="bundle-body">
+              <span class="section-label">خلط العطور • LAYERING DUO</span>
+              <h3 class="bundle-title">باقة التناغم الثنائي</h3>
+              <p class="bundle-desc">عطران متكاملان لابتكار بصمتك العطرية الخاصة عبر فن خلط العطور (Scent Layering).</p>
+              <div class="bundle-items">
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>إكسير مسك الحرير ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>سحر الورد الدمشقي ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>دليل خلط العطور المصور</span></div>
+              </div>
+              <div class="bundle-price-row">
+                <span class="bundle-old-price">٦٧٥ ر.س</span>
+                <span class="bundle-new-price">٥٤٠ <small>ر.س</small></span>
+                <span class="bundle-save"><span class="material-symbols-outlined" style="font-size:0.875rem;">savings</span>وفّري ١٣٥ ر.س</span>
+              </div>
+              <button class="btn-add-cart" style="width:100%;justify-content:center;" onclick="addToCartNotification('باقة التناغم الثنائي', '540 ر.س')" type="button">
+                <span class="material-symbols-outlined">local_mall</span>
+                <span>أضيفي الباقة للسلة</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bundle 3 -->
+          <div class="bundle-card">
+            <div class="bundle-image">
+              <img alt="صندوق العناية بالشعر" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3vcJ7Miu_zGeyIvhe012YaemsvfqU1DeegwzSC6cGnSpwm09gvawT7__Te25KBHtAEZt_ko5TKQe6Cy7CaOEIthLptwBVO3DwQMlZOtqIBwcyWBPwKJsAbDBV0OuxYVg0jMXtPSEa1IRgYmwifRRkAXsfulqdAnoFk016VYdchIuTKU7uHR9ZWhA5Ko5-8BZmEqS6qciqhR6CiUfbnkawXOF_fkimIKt0oj9aUQ1z449ckT9Cy9y88w" />
+              <div class="bundle-discount">وفّري ٢٥٪</div>
+            </div>
+            <div class="bundle-body">
+              <span class="section-label">روتين كامل • HAIR RITUAL</span>
+              <h3 class="bundle-title">صندوق العناية بالشعر الكامل</h3>
+              <p class="bundle-desc">روتين متكامل من ٤ خطوات لشعر صحي، قوي، ولامع كالحرير خلال ٣٠ يوماً فقط.</p>
+              <div class="bundle-items">
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>إكسير إكليل الجبل الذهبي ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>زيت الحرير بالأرغان ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>ماسك الزيوت الساخنة ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>سيروم الورد ٥٠ مل</span></div>
+              </div>
+              <div class="bundle-price-row">
+                <span class="bundle-old-price">٧٢٠ ر.س</span>
+                <span class="bundle-new-price">٥٤٠ <small>ر.س</small></span>
+                <span class="bundle-save"><span class="material-symbols-outlined" style="font-size:0.875rem;">savings</span>وفّري ١٨٠ ر.س</span>
+              </div>
+              <button class="btn-add-cart" style="width:100%;justify-content:center;" onclick="addToCartNotification('صندوق العناية بالشعر الكامل', '540 ر.س')" type="button">
+                <span class="material-symbols-outlined">local_mall</span>
+                <span>أضيفي الباقة للسلة</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bundle 4 -->
+          <div class="bundle-card">
+            <div class="bundle-image">
+              <img alt="صندوق الهدايا الفاخر" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNAXMdHZwHyYVmsWX0Wn98UPo1lU8jSF121OwvIqAQB2ne5Xaa0tliXWlJ62eA70c6oooPgDN2wm7dUzH2iQZWgPDiB5pQtqM3M0xkZvFN_z3wzcPFdTyiFdkDgcCCsGdv-zKmMcUXCdELtRu9xZHXmnDGIvsvE27UwLhEzHbZkKa5dLACNE4hvhEEkrF34CggopkxNs4l8nCHM6sE-FKYFsPAC2MqTUd_3Ag3oesnvkepWniRm4Mg0Q" />
+              <div class="bundle-discount">وفّري ١٥٪</div>
+            </div>
+            <div class="bundle-body">
+              <span class="section-label">هدايا • SIGNATURE GIFT BOX</span>
+              <h3 class="bundle-title">صندوق الهدايا الفاخر</h3>
+              <p class="bundle-desc">صندوق هدايا راقٍ يحتوي على عطور نادرة وزيوت مختارة مع بطاقة إهداء مذهّبة.</p>
+              <div class="bundle-items">
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>توليفة مروة الخاصة ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>ياسمين الليل والعنبر ٥٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>سيروم الورد للشعر ٥٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>بطاقة إهداء ذهبية مخصصة</span></div>
+              </div>
+              <div class="bundle-price-row">
+                <span class="bundle-old-price">١٬٠٠٠ ر.س</span>
+                <span class="bundle-new-price">٨٥٠ <small>ر.س</small></span>
+                <span class="bundle-save"><span class="material-symbols-outlined" style="font-size:0.875rem;">savings</span>وفّري ١٥٠ ر.س</span>
+              </div>
+              <button class="btn-add-cart" style="width:100%;justify-content:center;" onclick="addToCartNotification('صندوق الهدايا الفاخر', '850 ر.س')" type="button">
+                <span class="material-symbols-outlined">local_mall</span>
+                <span>أضيفي الباقة للسلة</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bundle 5 -->
+          <div class="bundle-card">
+            <div class="bundle-image">
+              <img alt="مجموعة عطر الرجل العصري" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSy8GSKpmOLem-bAh0XNPsjW62xeUicsJbMaqtTOxtGhxbvYNfIPEuzu8yn3a0nYCh1y0E6M7gd7PNz3P1dYmvxt47e2MA4pfqzs9LB-w_5_A--q-nVzbw541RliCCvMdYp67wdxGz7kB-Te_Z_O7SSJpSvnNxM_jeTAAmpcZRFcbDAOoa-OAVBkG2lqdg2WVfRuY0Ei83Ee4cUkxN3hwlltIy9MWbjUTyC2XKLdkLE_C412Uehxw55w" />
+              <div class="bundle-discount">وفّري ٢٠٪</div>
+            </div>
+            <div class="bundle-body">
+              <span class="section-label">للرجال • GENTLEMAN SET</span>
+              <h3 class="bundle-title">مجموعة عطر الرجل العصري</h3>
+              <p class="bundle-desc">مجموعة راقية للرجل الذي يبحث عن التميز بأناقة وثبات ممتد طوال اليوم.</p>
+              <div class="bundle-items">
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>عود السلطان الكمبودي ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>الأزرق الأزلي ١٠٠ مل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>علبة سفر جلدية فاخرة</span></div>
+              </div>
+              <div class="bundle-price-row">
+                <span class="bundle-old-price">٩٠٠ ر.س</span>
+                <span class="bundle-new-price">٧٢٠ <small>ر.س</small></span>
+                <span class="bundle-save"><span class="material-symbols-outlined" style="font-size:0.875rem;">savings</span>وفّري ١٨٠ ر.س</span>
+              </div>
+              <button class="btn-add-cart" style="width:100%;justify-content:center;" onclick="addToCartNotification('مجموعة عطر الرجل العصري', '720 ر.س')" type="button">
+                <span class="material-symbols-outlined">local_mall</span>
+                <span>أضيفي الباقة للسلة</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bundle 6 -->
+          <div class="bundle-card">
+            <div class="bundle-image">
+              <img alt="باقة الاستكشاف" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9Bj_n7xEtrJsAO7RvwltjI3Zfgq4haE3-nngNGS-MdeVJu52YDZQK2VrN6m2KXy_A9LN_Y82ncLh49y7hPeT2jufXWZtXLmrJlKNqUGHCHiB7f881LY0LA6BliqeB8s0c0CGDpabMl8OspCoOWA_Tn45LhBmAugrWqUnHpEp3WlT9SNoY8FWytKJlyPafwxVLeyXSuvmzAipMnxK1tVB77ei9zQPkWNdQvftxmfd_p_BcMGWMMvnokQ" />
+              <div class="bundle-discount">عينة مجانية</div>
+            </div>
+            <div class="bundle-body">
+              <span class="section-label">للتجربة • DISCOVERY SET</span>
+              <h3 class="bundle-title">باقة الاستكشاف العطرية</h3>
+              <p class="bundle-desc">٦ عينات صغيرة (٥ مل لكل منها) لاكتشاف تشكيلتنا الفاخرة قبل اقتناء العبوة الكاملة.</p>
+              <div class="bundle-items">
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>٦ عينات ٥ مل متنوعة</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>دليل النوتات العطرية الكامل</span></div>
+                <div class="bundle-item"><span class="material-symbols-outlined">check_circle</span><span>قسيمة خصم ١٠٠ ر.س للطلب القادم</span></div>
+              </div>
+              <div class="bundle-price-row">
+                <span class="bundle-old-price">٣٥٠ ر.س</span>
+                <span class="bundle-new-price">٢٤٥ <small>ر.س</small></span>
+                <span class="bundle-save"><span class="material-symbols-outlined" style="font-size:0.875rem;">savings</span>وفّري ١٠٥ ر.س</span>
+              </div>
+              <button class="btn-add-cart" style="width:100%;justify-content:center;" onclick="addToCartNotification('باقة الاستكشاف العطرية', '245 ر.س')" type="button">
+                <span class="material-symbols-outlined">local_mall</span>
+                <span>أضيفي الباقة للسلة</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <div class="modal-overlay" id="quick-view-modal">
+        <div class="modal-content">
+          <button class="modal-close" onclick="closeQuickView()" type="button"><span class="material-symbols-outlined">close</span></button>
+          <div class="modal-image"><img alt="Product" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEvYXF_ad0lJ13RKrUo9D3m-NDQxbX__t8Pz_TH0QwX2egvEjDoKO_jIhUKRPvy6PdEK4-AlhAULLscOVAqVCGfMuCstonOuxjs-4Rw_Z6Cq2hLA1Nm0r2b4zufx64eUR7xLBj0motemif_E-VwGjiIvA7i3ggdNQCewKj2BOkrC5iNMG1ome72cImkY9MZc2aeCMNaIebmL4BUdIiwfyCOTs7nF9qhT5mJ4QaTdDbaZcSsElvyW86sw" /></div>
+          <div class="modal-body">
+            <div>
+              <span class="modal-label">تفاصيل المزيج الملكي</span>
+              <h3 class="modal-title" id="modal-title">اسم المنتج</h3>
+              <span class="modal-price" id="modal-price">٠ ر.س</span>
+              <p class="modal-desc" id="modal-desc">وصف المنتج...</p>
+            </div>
+            <div class="modal-actions">
+              <button class="modal-add-btn" id="modal-add-btn" type="button">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                <span>إضافة إلى الحقيبة</span>
+              </button>
+              <button class="modal-cancel-btn" onclick="closeQuickView()" type="button">إغلاق</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="cart-toast">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span id="cart-toast-text">تمت الإضافة بنجاح</span>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="footer-brand-header">
+              <span class="footer-brand-name">مَرْوَة</span>
+              <span class="footer-brand-sub">HAUTE PARFUMERIE</span>
+            </div>
+            <p class="footer-text">مستخلصات نباتية نقية ودهون عطرية فاخرة مُصممة بعناية لتعكس الرقي.</p>
+            <div class="footer-hours">
+              <span class="material-symbols-outlined" style="font-size:1rem;">schedule</span>
+              <span>أوقات البوتيك: السبت - الخميس (١٠ ص - ١١ م)</span>
+            </div>
+          </div>
+          <div class="footer-links">
+            <span class="footer-links-title">روابط البوتيك</span>
+            <a href="womens-perfumes.html">عطور الزهور المخملية</a>
+            <a href="hair-oils.html">زيوت إكليل الجبل والخزامى</a>
+            <a href="offers.html">باقات الأعراس الملكية</a>
+            <a href="#">سياسة الاستبدال والضمان الذهبي</a>
+          </div>
+          <div class="footer-contact">
+            <span class="footer-links-title">التواصل والتألق</span>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">alternate_email</span><span>Instagram: @marwa.parfum</span></div>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">location_on</span><span>الرياض - البوليفارد سيتي، السعودية</span></div>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">call</span><span>+966 50 000 0000</span></div>
+          </div>
+          <div class="footer-newsletter">
+            <span class="footer-links-title">نشرة أسرار الطبيعة</span>
+            <p class="footer-text">انضمي إلى نادي مروة الخاص لتصلكِ الإصدارات المحدودة قبل الجميع.</p>
+            <div class="footer-newsletter-form">
+              <input type="email" placeholder="بريدكِ الإلكتروني..." />
+              <button type="button">اشتراك</button>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© ٢٠٢٥ دار مروة للعطور والزيوت النباتية. جميع الحقوق محفوظة.</p>
+          <div class="footer-payment"><span>مدى</span><span>فيزا</span><span>Apple Pay</span><span>تمارا</span><span>تابي</span></div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <a href="https://wa.me/966500000000" target="_blank" rel="noopener noreferrer" class="whatsapp-btn" aria-label="تواصل واتساب"><span class="material-symbols-outlined">chat</span></a>
+  <a href="#top" class="back-to-top" aria-label="العودة للأعلى"><span class="material-symbols-outlined">keyboard_arrow_up</span></a>
+
+  <script src="script.js"></script>
+  <script>
+    // Countdown Timer
+    (function initCountdown() {
+      const targetDate = new Date();
+      targetDate.setDate(targetDate.getDate() + 7);
+
+      function update() {
+        const diff = targetDate - new Date();
+        if (diff <= 0) return;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        const pad = (n) => String(n).padStart(2, '0');
+        const toAr = (s) => s.replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+        const dEl = document.getElementById('days');
+        const hEl = document.getElementById('hours');
+        const mEl = document.getElementById('minutes');
+        const sEl = document.getElementById('seconds');
+        if (dEl) dEl.textContent = toAr(pad(days));
+        if (hEl) hEl.textContent = toAr(pad(hours));
+        if (mEl) mEl.textContent = toAr(pad(minutes));
+        if (sEl) sEl.textContent = toAr(pad(seconds));
+      }
+      update();
+      setInterval(update, 1000);
+    })();
+  </script>
+</body>
+</html>

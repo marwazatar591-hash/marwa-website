@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>إتمام الشراء | مَرْوَة</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-lg);
+    }
+    @media (min-width: 1024px) {
+      .checkout-layout {
+        grid-template-columns: 7fr 5fr;
+      }
+    }
+    .checkout-card {
+      background: var(--color-surface-container-lowest);
+      border-radius: var(--radius-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-md);
+    }
+    .checkout-card + .checkout-card {
+      margin-top: var(--space-md);
+    }
+    .checkout-section-title {
+      font-family: var(--font-headline);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .checkout-section-title .num {
+      width: 2rem;
+      height: 2rem;
+      border-radius: var(--radius-full);
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+    @media (min-width: 640px) {
+      .form-row.two-cols { grid-template-columns: 1fr 1fr; }
+      .form-row.three-cols { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+    .form-field label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-on-surface-variant);
+      letter-spacing: 0.06em;
+    }
+    .form-field label .required { color: var(--color-error); }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-default);
+      background: var(--color-surface-container-low);
+      border: 1px solid var(--color-outline-variant);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      color: var(--color-on-surface);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      border-color: var(--color-primary);
+      background: var(--color-surface-container-lowest);
+      box-shadow: 0 0 0 3px rgba(123, 83, 92, 0.1);
+    }
+    .payment-methods {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: var(--space-md);
+    }
+    .payment-method {
+      position: relative;
+      padding: 1rem;
+      border-radius: var(--radius-default);
+      background: var(--color-surface-container-low);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-on-surface-variant);
+    }
+    .payment-method input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .payment-method:hover {
+      background: var(--color-surface-container);
+    }
+    .payment-method.selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-fixed);
+      color: var(--color-primary);
+    }
+    .payment-method .material-symbols-outlined {
+      display: block;
+      font-size: 1.75rem;
+      margin-bottom: 0.25rem;
+      color: var(--color-secondary);
+    }
+    .payment-method.selected .material-symbols-outlined {
+      color: var(--color-primary);
+    }
+    .order-summary-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 20rem;
+      overflow-y: auto;
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--color-surface-container);
+    }
+    .summary-item {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .summary-item-img {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: var(--radius-default);
+      overflow: hidden;
+      background: var(--color-surface-container-high);
+      flex-shrink: 0;
+    }
+    .summary-item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .summary-item-img .noimg {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--color-primary-fixed), var(--color-secondary-fixed));
+      color: var(--color-primary);
+    }
+    .summary-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .summary-item-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-on-surface);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .summary-item-qty {
+      font-size: 0.6875rem;
+      color: var(--color-on-surface-variant);
+      margin-top: 0.125rem;
+    }
+    .summary-item-price {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      font-family: var(--font-headline);
+      white-space: nowrap;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      font-size: 0.875rem;
+      color: var(--color-on-surface-variant);
+    }
+    .summary-row.total {
+      padding-top: var(--space-sm);
+      border-top: 2px solid var(--color-surface-container-high);
+      margin-top: 0.5rem;
+      font-size: 1.125rem;
+      font-family: var(--font-headline);
+      color: var(--color-on-surface);
+    }
+    .summary-row.total strong {
+      font-size: 1.5rem;
+      color: var(--color-primary);
+    }
+    .summary-row .free {
+      color: var(--color-secondary);
+      font-weight: 700;
+    }
+    .place-order-btn {
+      width: 100%;
+      padding: 1rem;
+      border-radius: var(--radius-full);
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: var(--space-md);
+      transition: all 0.2s;
+    }
+    .place-order-btn:hover:not(:disabled) {
+      background: var(--color-on-primary-container);
+      box-shadow: var(--shadow-lg);
+    }
+    .place-order-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .secure-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      margin-top: var(--space-sm);
+      font-size: 0.6875rem;
+      color: var(--color-outline);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+    }
+    .coupon-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: var(--space-md);
+    }
+    .coupon-row input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-default);
+      background: var(--color-surface-container-low);
+      border: 1px solid var(--color-outline-variant);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      outline: none;
+    }
+    .coupon-row button {
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-default);
+      background: var(--color-secondary);
+      color: var(--color-on-secondary);
+      border: none;
+      font-weight: 700;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.2s;
+    }
+    .coupon-row button:hover {
+      background: var(--color-secondary-container);
+      color: var(--color-on-secondary-container);
+    }
+    .empty-checkout {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--color-outline);
+    }
+    .empty-checkout .material-symbols-outlined {
+      font-size: 4rem;
+      color: var(--color-primary-container);
+      margin-bottom: 0.5rem;
+    }
+    .empty-checkout h2 {
+      font-family: var(--font-headline);
+      font-size: 1.5rem;
+      color: var(--color-on-surface);
+      margin-bottom: 0.5rem;
+    }
+    .empty-checkout p {
+      margin-bottom: var(--space-md);
+    }
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 4rem 2rem;
+      max-width: 40rem;
+      margin: 0 auto;
+    }
+    .success-screen.active { display: block; }
+    .success-icon {
+      width: 5rem;
+      height: 5rem;
+      margin: 0 auto var(--space-md);
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--color-primary-fixed), var(--color-secondary-fixed));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary);
+      animation: successPop 0.5s ease;
+    }
+    .success-icon .material-symbols-outlined {
+      font-size: 2.5rem;
+    }
+    @keyframes successPop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .success-title {
+      font-family: var(--font-headline);
+      font-size: 2rem;
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+    }
+    .success-desc {
+      font-size: 1rem;
+      color: var(--color-on-surface-variant);
+      margin-bottom: var(--space-md);
+      line-height: 1.7;
+    }
+    .order-number {
+      display: inline-block;
+      padding: 0.5rem 1.5rem;
+      border-radius: var(--radius-full);
+      background: var(--color-surface-container);
+      font-family: var(--font-headline);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+      margin-bottom: var(--space-lg);
+      letter-spacing: 0.05em;
+    }
+    .success-actions {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .order-progress {
+      display: flex;
+      justify-content: space-between;
+      max-width: 32rem;
+      margin: 0 auto var(--space-xl);
+      position: relative;
+    }
+    .order-progress::before {
+      content: '';
+      position: absolute;
+      top: 1.25rem;
+      right: 2rem;
+      left: 2rem;
+      height: 2px;
+      background: var(--color-surface-container-high);
+      z-index: 0;
+    }
+    .progress-step {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+    }
+    .progress-step .circle {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-full);
+      background: var(--color-surface-container);
+      color: var(--color-outline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 700;
+      border: 3px solid var(--color-surface-container-lowest);
+    }
+    .progress-step.active .circle {
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+    .progress-step.done .circle {
+      background: var(--color-secondary);
+      color: var(--color-on-secondary);
+    }
+    .progress-step span:last-child {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--color-on-surface-variant);
+      letter-spacing: 0.06em;
+    }
+    .progress-step.active span:last-child {
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar" id="sidebar">
+    <div>
+      <div class="sidebar-profile">
+        <img alt="Profile" src="https://lh3.googleusercontent.com/aida/AEtjO1UJZifLAqDHm10WB-kcewgfP4ZGr7kWMOXsFHXYEC1tXdNYg4PdQaI-BBWhsc1yfYFUbUSwt50BrEDQQiBVBgorzx19WFUA1EjZhx5FKiR0iOfivB9o9gLHat5w7x6HBpiPRdK_X85IMJ4-v7YQD0CIYTGpa3_vTDNZvU7X6B0UHHYRlhUSXUPLcQRpnrqB54mid0qehrdjNGXFmBYcAWb4EKV4jTrztIICRV41vPzd91LwkqcbTMrGo3na" />
+        <div>
+          <span class="sidebar-brand-name">مَرْوَة</span>
+          <span class="sidebar-brand-sub">PARFUMS &amp; BOTANIQUE</span>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <nav class="sidebar-nav">
+        <a href="index.html"><span class="material-symbols-outlined">spa</span><span>الرئيسية</span></a>
+        <a href="womens-perfumes.html"><span class="material-symbols-outlined">local_florist</span><span>العطور النسائية</span></a>
+        <a href="mens-perfumes.html"><span class="material-symbols-outlined">dark_mode</span><span>العطور الرجالية</span></a>
+        <a href="hair-oils.html"><span class="material-symbols-outlined">water_drop</span><span>زيوت الشعر الطبيعية</span></a>
+        <a href="offers.html"><span class="material-symbols-outlined">featured_seasonal_and_gifts</span><span>العروض والباقات</span></a>
+        <a href="gallery.html"><span class="material-symbols-outlined">photo_camera</span><span>معرض الصور</span></a>
+        <a href="contact.html"><span class="material-symbols-outlined">perm_phone_msg</span><span>تواصلي معنا</span></a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-cart-info">
+        <span>حقيبة التسوق</span>
+        <span class="sidebar-cart-count" data-cart-count>٠</span>
+      </div>
+      <div class="sidebar-settings">
+        <button type="button"><span class="material-symbols-outlined">language</span><span>العربية (SA)</span></button>
+        <button class="theme-toggle" aria-label="Toggle theme" type="button"><span class="material-symbols-outlined">routine</span></button>
+      </div>
+    </div>
+  </aside>
+
+  <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="القائمة"><span class="material-symbols-outlined">menu</span></button>
+
+  <div class="main-wrapper">
+    <header class="header">
+      <div class="header-announcement">
+        <div class="header-announcement-content">
+          <span class="material-symbols-outlined" style="font-size:1rem;">lock</span>
+          <span>دفع آمن ١٠٠٪ • تشفير SSL • بياناتك محمية بالكامل</span>
+        </div>
+        <div><span>إتمام الشراء</span></div>
+      </div>
+      <div class="header-main">
+        <div class="header-search">
+          <div class="header-search-wrapper">
+            <input type="text" placeholder="ابحث..." />
+            <span class="material-symbols-outlined">search</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="header-action-btn" type="button">
+            <span class="material-symbols-outlined">favorite</span>
+            <span>المفضلة</span>
+            <span class="header-badge tertiary" data-wishlist-count>٠</span>
+          </button>
+          <button class="header-action-btn" type="button">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            <span>الحقيبة</span>
+            <span class="header-badge secondary" data-cart-count>٠</span>
+          </button>
+          <img alt="Profile" class="header-avatar" src="https://lh3.googleusercontent.com/aida/AEtjO1UJZifLAqDHm10WB-kcewgfP4ZGr7kWMOXsFHXYEC1tXdNYg4PdQaI-BBWhsc1yfYFUbUSwt50BrEDQQiBVBgorzx19WFUA1EjZhx5FKiR0iOfivB9o9gLHat5w7x6HBpiPRdK_X85IMJ4-v7YQD0CIYTGpa3_vTDNZvU7X6B0UHHYRlhUSXUPLcQRpnrqB54mid0qehrdjNGXFmBYcAWb4EKV4jTrztIICRV41vPzd91LwkqcbTMrGo3na" />
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <!-- Progress Bar -->
+      <div class="section" style="padding-bottom:0;">
+        <div class="order-progress">
+          <div class="progress-step done">
+            <div class="circle"><span class="material-symbols-outlined" style="font-size:1rem;">check</span></div>
+            <span>الحقيبة</span>
+          </div>
+          <div class="progress-step active">
+            <div class="circle">٢</div>
+            <span>معلومات الشحن والدفع</span>
+          </div>
+          <div class="progress-step">
+            <div class="circle">٣</div>
+            <span>تأكيد الطلب</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-checkout" id="empty-checkout" style="display:none;">
+        <span class="material-symbols-outlined">shopping_bag</span>
+        <h2>حقيبتكِ فارغة</h2>
+        <p>أضيفي بعض المنتجات الفاخرة قبل إتمام الشراء</p>
+        <a href="index.html" class="btn-primary">
+          <span style="position:relative;z-index:10;">ابدئي التسوق</span>
+          <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+      </div>
+
+      <!-- Checkout Form -->
+      <div class="checkout-layout" id="checkout-main">
+
+        <!-- Right Column: Form -->
+        <div>
+
+          <!-- Contact Info -->
+          <div class="checkout-card">
+            <h2 class="checkout-section-title">
+              <span class="num">١</span>
+              <span>معلومات التواصل</span>
+            </h2>
+            <div class="form-row two-cols">
+              <div class="form-field">
+                <label for="co-name">الاسم الكامل <span class="required">*</span></label>
+                <input type="text" id="co-name" placeholder="مثال: سارة العتيبي" required />
+              </div>
+              <div class="form-field">
+                <label for="co-phone">رقم الجوال <span class="required">*</span></label>
+                <input type="tel" id="co-phone" placeholder="+966 5X XXX XXXX" required dir="ltr" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="co-email">البريد الإلكتروني <span class="required">*</span></label>
+                <input type="email" id="co-email" placeholder="example@email.com" required dir="ltr" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Shipping Address -->
+          <div class="checkout-card">
+            <h2 class="checkout-section-title">
+              <span class="num">٢</span>
+              <span>عنوان التوصيل</span>
+            </h2>
+            <div class="form-row two-cols">
+              <div class="form-field">
+                <label for="co-city">المدينة <span class="required">*</span></label>
+                <select id="co-city" required>
+                  <option value="">اختاري المدينة...</option>
+                  <option value="الرياض">الرياض</option>
+                  <option value="جدة">جدة</option>
+                  <option value="مكة">مكة المكرمة</option>
+                  <option value="المدينة">المدينة المنورة</option>
+                  <option value="الدمام">الدمام</option>
+                  <option value="الخبر">الخبر</option>
+                  <option value="الطائف">الطائف</option>
+                  <option value="أبها">أبها</option>
+                  <option value="تبوك">تبوك</option>
+                  <option value="بريدة">بريدة</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="co-district">الحي <span class="required">*</span></label>
+                <input type="text" id="co-district" placeholder="مثال: حي العليا" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label for="co-address">العنوان التفصيلي <span class="required">*</span></label>
+                <input type="text" id="co-address" placeholder="اسم الشارع، رقم المبنى، رقم الشقة" required />
+              </div>
+            </div>
+            <div class="form-row two-cols">
+              <div class="form-field">
+                <label for="co-postal">الرمز البريدي</label>
+                <input type="text" id="co-postal" placeholder="XXXXX" dir="ltr" />
+              </div>
+              <div class="form-field">
+                <label for="co-notes">ملاحظات إضافية</label>
+                <input type="text" id="co-notes" placeholder="مثال: اتصل قبل التوصيل" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="checkout-card">
+            <h2 class="checkout-section-title">
+              <span class="num">٣</span>
+              <span>طريقة الدفع</span>
+            </h2>
+            <div class="payment-methods">
+              <label class="payment-method selected">
+                <input type="radio" name="payment" value="mada" checked />
+                <span class="material-symbols-outlined">credit_card</span>
+                <span>مدى</span>
+              </label>
+              <label class="payment-method">
+                <input type="radio" name="payment" value="visa" />
+                <span class="material-symbols-outlined">credit_card</span>
+                <span>فيزا / ماستركارد</span>
+              </label>
+              <label class="payment-method">
+                <input type="radio" name="payment" value="applepay" />
+                <span class="material-symbols-outlined">phone_iphone</span>
+                <span>Apple Pay</span>
+              </label>
+              <label class="payment-method">
+                <input type="radio" name="payment" value="tamara" />
+                <span class="material-symbols-outlined">schedule</span>
+                <span>تمارا (٤ دفعات)</span>
+              </label>
+              <label class="payment-method">
+                <input type="radio" name="payment" value="tabby" />
+                <span class="material-symbols-outlined">calendar_month</span>
+                <span>تابي (٤ دفعات)</span>
+              </label>
+              <label class="payment-method">
+                <input type="radio" name="payment" value="cod" />
+                <span class="material-symbols-outlined">payments</span>
+                <span>الدفع عند الاستلام</span>
+              </label>
+            </div>
+
+            <!-- Card Details (shown for card payments) -->
+            <div id="card-details">
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="co-card-number">رقم البطاقة <span class="required">*</span></label>
+                  <input type="text" id="co-card-number" placeholder="XXXX XXXX XXXX XXXX" dir="ltr" maxlength="19" />
+                </div>
+              </div>
+              <div class="form-row three-cols">
+                <div class="form-field">
+                  <label for="co-card-expiry">تاريخ الانتهاء <span class="required">*</span></label>
+                  <input type="text" id="co-card-expiry" placeholder="MM/YY" dir="ltr" maxlength="5" />
+                </div>
+                <div class="form-field">
+                  <label for="co-card-cvv">CVV <span class="required">*</span></label>
+                  <input type="text" id="co-card-cvv" placeholder="XXX" dir="ltr" maxlength="4" />
+                </div>
+                <div class="form-field">
+                  <label for="co-card-name">الاسم على البطاقة <span class="required">*</span></label>
+                  <input type="text" id="co-card-name" placeholder="SARAH ALOTAIBI" dir="ltr" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Left Column: Order Summary -->
+        <div>
+          <div class="checkout-card" style="position:sticky;top:7rem;">
+            <h2 class="checkout-section-title" style="font-size:1.25rem;">
+              <span class="material-symbols-outlined" style="color:var(--color-primary);">receipt_long</span>
+              <span>ملخص الطلب</span>
+            </h2>
+
+            <div class="order-summary-items" id="order-summary-items"></div>
+
+            <!-- Coupon -->
+            <div class="coupon-row">
+              <input type="text" id="coupon-input" placeholder="كود الخصم (مثال: MARWA25)" />
+              <button type="button" onclick="applyCoupon()">تطبيق</button>
+            </div>
+
+            <!-- Totals -->
+            <div class="summary-row">
+              <span>المجموع الفرعي</span>
+              <span id="co-subtotal">٠ ر.س</span>
+            </div>
+            <div class="summary-row" id="discount-row" style="display:none;">
+              <span>الخصم</span>
+              <span id="co-discount" style="color:var(--color-error);">- ٠ ر.س</span>
+            </div>
+            <div class="summary-row">
+              <span>الشحن</span>
+              <span id="co-shipping" class="free">مجاني</span>
+            </div>
+            <div class="summary-row">
+              <span>الضريبة (١٥٪)</span>
+              <span id="co-tax">٠ ر.س</span>
+            </div>
+            <div class="summary-row total">
+              <span>الإجمالي</span>
+              <strong id="co-total">٠ ر.س</strong>
+            </div>
+
+            <button class="place-order-btn" id="place-order-btn" type="button" onclick="placeOrder()">
+              <span class="material-symbols-outlined">lock</span>
+              <span>تأكيد الطلب والدفع</span>
+            </button>
+            <div class="secure-note">
+              <span class="material-symbols-outlined" style="font-size:0.875rem;">verified_user</span>
+              <span>دفع آمن ومشفر بالكامل • ضمان استرداد خلال ١٤ يوم</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Success Screen -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-icon">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <h1 class="success-title">تم استلام طلبكِ بنجاح!</h1>
+        <p class="success-desc">
+          شكراً لثقتكِ بدار مروة. تم إرسال تفاصيل الطلب إلى بريدك الإلكتروني،
+          وسيتواصل فريقنا معكِ خلال ٢٤ ساعة لتأكيد التوصيل.
+        </p>
+        <div class="order-number" id="order-number">#MW-000000</div>
+
+        <div style="background:var(--color-surface-container-low);border-radius:var(--radius-xl);padding:1.5rem;margin-bottom:1.5rem;text-align:right;">
+          <h3 style="font-family:var(--font-headline);color:var(--color-primary);margin-bottom:1rem;">تفاصيل التوصيل</h3>
+          <div id="order-details" style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.875rem;color:var(--color-on-surface-variant);"></div>
+        </div>
+
+        <div class="success-actions">
+          <a href="index.html" class="btn-primary">
+            <span style="position:relative;z-index:10;">العودة للتسوق</span>
+            <span class="material-symbols-outlined">arrow_back</span>
+          </a>
+          <a href="https://wa.me/966500000000" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+            <span>تتبع طلبكِ عبر واتساب</span>
+            <span class="material-symbols-outlined">chat</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="toast" id="cart-toast">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span id="cart-toast-text">تمت الإضافة بنجاح</span>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="footer-brand-header">
+              <span class="footer-brand-name">مَرْوَة</span>
+              <span class="footer-brand-sub">HAUTE PARFUMERIE</span>
+            </div>
+            <p class="footer-text">مستخلصات نباتية نقية ودهون عطرية فاخرة مُصممة بعناية لتعكس الرقي والأنوثة.</p>
+            <div class="footer-hours">
+              <span class="material-symbols-outlined" style="font-size:1rem;">schedule</span>
+              <span>أوقات البوتيك: السبت - الخميس (١٠ ص - ١١ م)</span>
+            </div>
+          </div>
+          <div class="footer-links">
+            <span class="footer-links-title">روابط البوتيك</span>
+            <a href="womens-perfumes.html">عطور الزهور المخملية</a>
+            <a href="hair-oils.html">زيوت إكليل الجبل والخزامى</a>
+            <a href="offers.html">باقات الأعراس الملكية</a>
+            <a href="#">سياسة الاستبدال والضمان الذهبي</a>
+          </div>
+          <div class="footer-contact">
+            <span class="footer-links-title">التواصل والتألق</span>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">alternate_email</span><span>Instagram: @marwa.parfum</span></div>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">location_on</span><span>الرياض - البوليفارد سيتي، السعودية</span></div>
+            <div class="footer-contact-item"><span class="material-symbols-outlined">call</span><span>+966 50 000 0000</span></div>
+          </div>
+          <div class="footer-newsletter">
+            <span class="footer-links-title">نشرة أسرار الطبيعة</span>
+            <p class="footer-text">انضمي إلى نادي مروة الخاص لتصلكِ الإصدارات المحدودة قبل الجميع.</p>
+            <div class="footer-newsletter-form">
+              <input type="email" placeholder="بريدكِ الإلكتروني..." />
+              <button type="button">اشتراك</button>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© ٢٠٢٥ دار مروة للعطور والزيوانات النباتية. جميع الحقوق محفوظة.</p>
+          <div class="footer-payment"><span>مدى</span><span>فيزا</span><span>Apple Pay</span><span>تمارا</span><span>تابي</span></div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // ============================================
+    // CHECKOUT PAGE LOGIC
+    // ============================================
+    let appliedDiscount = 0;
+    let couponCode = '';
+
+    // Redirect if cart is empty
+    document.addEventListener('DOMContentLoaded', () => {
+      const cart = window.MarwaStore.getCart();
+      const emptyEl = document.getElementById('empty-checkout');
+      const mainEl = document.getElementById('checkout-main');
+
+      if (!cart.length) {
+        if (emptyEl) emptyEl.style.display = 'block';
+        if (mainEl) mainEl.style.display = 'none';
+        return;
+      }
+      renderOrderSummary();
+    });
+
+    // Render summary
+    function renderOrderSummary() {
+      const cart = window.MarwaStore.getCart();
+      const itemsEl = document.getElementById('order-summary-items');
+      if (!itemsEl) return;
+
+      itemsEl.innerHTML = cart.map((item) => {
+        const img = item.image
+          ? `<img src="${item.image}" alt="${item.name}" />`
+          : `<div class="noimg"><span class="material-symbols-outlined">local_florist</span></div>`;
+        const priceNum = parseFloat(String(item.price).replace(/[^\d.]/g, '')) || 0;
+        const lineTotal = priceNum * (item.qty || 1);
+        return `
+          <div class="summary-item">
+            <div class="summary-item-img">${img}</div>
+            <div class="summary-item-info">
+              <div class="summary-item-name">${item.name}</div>
+              <div class="summary-item-qty">الكمية: ${toArNum(item.qty || 1)}</div>
+            </div>
+            <div class="summary-item-price">${toArNum(lineTotal)} ر.س</div>
+          </div>
+        `;
+      }).join('');
+
+      updateTotals();
+    }
+
+    function updateTotals() {
+      const subtotal = window.MarwaStore.getCartTotal();
+      const shipping = 0; // free
+      const taxableAmount = subtotal - appliedDiscount;
+      const tax = taxableAmount * 0.15;
+      const total = taxableAmount + tax + shipping;
+
+      const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      set('co-subtotal', toArNum(Math.round(subtotal)) + ' ر.س');
+      set('co-shipping', shipping === 0 ? 'مجاني' : toArNum(shipping) + ' ر.س');
+      set('co-tax', toArNum(Math.round(tax)) + ' ر.س');
+      set('co-total', toArNum(Math.round(total)) + ' ر.س');
+
+      if (appliedDiscount > 0) {
+        const row = document.getElementById('discount-row');
+        const el = document.getElementById('co-discount');
+        if (row) row.style.display = 'flex';
+        if (el) el.textContent = '- ' + toArNum(Math.round(appliedDiscount)) + ' ر.س';
+      }
+    }
+
+    function applyCoupon() {
+      const input = document.getElementById('coupon-input');
+      const code = input.value.trim().toUpperCase();
+
+      if (!code) {
+        window.showToast('أدخلي كود الخصم أولاً');
+        return;
+      }
+
+      const coupons = {
+        'MARWA25': 0.25,
+        'WELCOME10': 0.10,
+        'VIP15': 0.15,
+        'BRIDE20': 0.20,
+      };
+
+      if (coupons[code] !== undefined) {
+        const subtotal = window.MarwaStore.getCartTotal();
+        appliedDiscount = subtotal * coupons[code];
+        couponCode = code;
+        window.showToast(`تم تطبيق كود ${code} بخصم ${coupons[code] * 100}٪`);
+        updateTotals();
+        input.disabled = true;
+      } else {
+        window.showToast('كود الخصم غير صحيح');
+        appliedDiscount = 0;
+        updateTotals();
+      }
+    }
+
+    // Payment method selection
+    document.querySelectorAll('.payment-method').forEach((label) => {
+      label.addEventListener('click', () => {
+        document.querySelectorAll('.payment-method').forEach((l) => l.classList.remove('selected'));
+        label.classList.add('selected');
+        const val = label.querySelector('input').value;
+
+        // Show card details only for card payments
+        const cardDetails = document.getElementById('card-details');
+        if (cardDetails) {
+          cardDetails.style.display = (val === 'mada' || val === 'visa') ? 'block' : 'none';
+        }
+      });
+    });
+
+    // Card number formatting
+    const cardInput = document.getElementById('co-card-number');
+    if (cardInput) {
+      cardInput.addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/g, '');
+        v = v.match(/.{1,4}/g)?.join(' ') || v;
+        e.target.value = v.slice(0, 19);
+      });
+    }
+
+    const expiryInput = document.getElementById('co-card-expiry');
+    if (expiryInput) {
+      expiryInput.addEventListener('input', (e) => {
+        let v = e.target.value.replace(/[^0-9]/g, '');
+        if (v.length >= 2) v = v.slice(0, 2) + '/' + v.slice(2, 4);
+        e.target.value = v;
+      });
+    }
+
+    // Place Order
+    function placeOrder() {
+      // Validation
+      const name = document.getElementById('co-name').value.trim();
+      const phone = document.getElementById('co-phone').value.trim();
+      const email = document.getElementById('co-email').value.trim();
+      const city = document.getElementById('co-city').value;
+      const district = document.getElementById('co-district').value.trim();
+      const address = document.getElementById('co-address').value.trim();
+      const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
+
+      if (!name || !phone || !email || !city || !district || !address) {
+        window.showToast('من فضلكِ أكملي جميع الحقول المطلوبة');
+        return;
+      }
+
+      // Simple email validation
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        window.showToast('البريد الإلكتروني غير صحيح');
+        return;
+      }
+
+      // Card validation
+      if (paymentMethod === 'mada' || paymentMethod === 'visa') {
+        const cardNum = document.getElementById('co-card-number').value.replace(/\s/g, '');
+        const cardExp = document.getElementById('co-card-expiry').value;
+        const cardCvv = document.getElementById('co-card-cvv').value;
+        const cardName = document.getElementById('co-card-name').value.trim();
+
+        if (cardNum.length < 16) {
+          window.showToast('رقم البطاقة غير صحيح');
+          return;
+        }
+        if (!/^\d{2}\/\d{2}$/.test(cardExp)) {
+          window.showToast('تاريخ الانتهاء غير صحيح');
+          return;
+        }
+        if (cardCvv.length < 3) {
+          window.showToast('رمز CVV غير صحيح');
+          return;
+        }
+        if (!cardName) {
+          window.showToast('أدخلي الاسم على البطاقة');
+          return;
+        }
+      }
+
+      // Disable button + show loading
+      const btn = document.getElementById('place-order-btn');
+      btn.disabled = true;
+      btn.innerHTML = `
+        <span class="material-symbols-outlined" style="animation:spin 1s linear infinite;">progress_activity</span>
+        <span>جاري معالجة الدفع...</span>
+      `;
+
+      // Simulate processing
+      setTimeout(() => {
+        // Generate order number
+        const orderNum = 'MW-' + Math.floor(100000 + Math.random() * 900000);
+
+        // Save order details
+        const orderData = {
+          number: orderNum,
+          name,
+          phone,
+          email,
+          city,
+          district,
+          address,
+          paymentMethod,
+          total: document.getElementById('co-total').textContent,
+          items: window.MarwaStore.getCart(),
+          date: new Date().toISOString(),
+        };
+
+        // Save to localStorage
+        const orders = JSON.parse(localStorage.getItem('marwa_orders') || '[]');
+        orders.push(orderData);
+        localStorage.setItem('marwa_orders', JSON.stringify(orders));
+
+        // Show success screen
+        showSuccessScreen(orderData);
+
+        // Clear cart
+        window.MarwaStore.clearCart();
+
+      }, 2200);
+    }
+
+    function showSuccessScreen(order) {
+      // Hide form, show success
+      document.getElementById('checkout-main').style.display = 'none';
+      document.querySelector('.order-progress').style.display = 'none';
+      document.getElementById('success-screen').classList.add('active');
+
+      // Fill order number
+      document.getElementById('order-number').textContent = '#' + order.number;
+
+      // Payment method labels
+      const methodLabels = {
+        mada: 'مدى', visa: 'فيزا / ماستركارد', applepay: 'Apple Pay',
+        tamara: 'تمارا', tabby: 'تابي', cod: 'الدفع عند الاستلام',
+      };
+
+      // Fill order details
+      document.getElementById('order-details').innerHTML = `
+        <div style="display:flex;justify-content:space-between;">
+          <span style="font-weight:600;">اسم المستلم:</span>
+          <span>${order.name}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="font-weight:600;">رقم الجوال:</span>
+          <span dir="ltr">${order.phone}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="font-weight:600;">العنوان:</span>
+          <span>${order.district}، ${order.city}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="font-weight:600;">طريقة الدفع:</span>
+          <span>${methodLabels[order.paymentMethod] || order.paymentMethod}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="font-weight:600;">الإجمالي المدفوع:</span>
+          <span style="color:var(--color-primary);font-weight:700;">${order.total}</span>
+        </div>
+      `;
+
+      window.showToast('تم استلام طلبكِ بنجاح! شكراً لثقتكِ بدار مروة');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Arabic numbers
+    function toArNum(n) {
+      return String(n).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+    }
+  </script>
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</body>
+</html>
